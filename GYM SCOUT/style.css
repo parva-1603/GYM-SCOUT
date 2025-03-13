@@ -1,0 +1,53 @@
+body{
+  background-image: url(3d-gym-equipment_23-2151114153.avif);
+  background-size: cover;
+  background-color: black;
+  
+}
+
+h1 {
+  font-family: Impact;
+  color: beige;
+  text-align: center;
+  font-size: 3em;
+}
+
+P{
+  padding-top: 20px;
+  padding-left: 50PX;
+  color: aliceblue;
+  font-size: 30PX;
+}
+
+a
+{
+  text-align: left;
+  font-family: Copperplate;
+
+}
+
+
+
+ul 
+{
+  color: azure;
+  font-size: 25px;
+}
+
+#o
+{
+  color: aliceblue;
+}
+
+h3,h2
+{
+  color: rgb(0, 123, 255);
+  font-size: 30px;
+}
+
+li{
+  font-size: 25px;
+}
+#a2{
+  text-align: center;
+}
