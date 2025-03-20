@@ -25,27 +25,30 @@ document.querySelectorAll(".anime-card").forEach((card) => {
     });
 
     card.addEventListener("click", (event) => {
-        event.preventDefault();
+        event.preventDefault();  // Ensure the redirect doesn't happen instantly
 
         // Identify anime title for unique effects
         const title = card.querySelector("h2").innerText;
         if (title.includes("Attack on Titan")) {
+            console.log("Attack on Titan clicked, applying screen shake!");
             document.body.classList.add("screen-shake");
-            setTimeout(() => document.body.classList.remove("screen-shake"), 1500);
+            setTimeout(() => {
+                document.body.classList.remove("screen-shake");
+            }, 1500); // Animation duration
         } else if (title.includes("Dragon Ball")) {
-            showShenronEffect();
+            showDragonBallEffect();
         } else if (title.includes("Demon Slayer")) {
             showSwordFightEffect();
         } else if (title.includes("Death Note")) {
             showBookOpeningEffect();
-        } else if (title.includes("One Punch Man")) {
+        } else if (title.includes("One Piece")) {
             showFiercePunchEffect();
         }
 
         // Wait for animation to finish, then redirect
         setTimeout(() => {
             window.location.href = card.querySelector("a").href;
-        }, 1500);
+        }, 1500); // Delay redirect to match animation duration
     });
 });
 
@@ -58,65 +61,135 @@ style.innerHTML = `
         50% { transform: translate(10px, -5px); }
         75% { transform: translate(-5px, 10px); }
     }
-    .screen-shake { animation: shake 0.2s linear infinite; }
-
-    @keyframes shenron-talk {
-        0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-        50% { transform: translateY(-5px) scale(1.05); opacity: 0.9; }
-    }
-     .shenron-effect {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 300px;
-        height: 300px;
-        background: url('shenron.png') no-repeat center/contain;
-        animation: shenron-talk 1.5s ease-in-out infinite;
-        pointer-events: none;
+    .screen-shake { 
+        animation: shake 0.2s linear infinite; 
     }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    .dragon-ball-effect {
-        position: fixed;
+   @keyframes spin-expand {
+    0% {
+        transform: rotate(0deg) scale(1);
         top: 50%;
         left: 50%;
         width: 100px;
         height: 100px;
-        background: url('dragonball.png') no-repeat center/contain;
-        animation: spin 1s linear infinite;
+    }
+    100% {
+        transform: rotate(360deg) scale(15);
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+.dragon-ball-effect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background: url('dragonball.png') no-repeat center/contain;
+    animation: spin-expand 3s ease-in-out forwards;
+    pointer-events: none;
+    z-index: 9999; /* Ensure the effect is on top */
+}
+
+    @keyframes left-slash-effect {
+        0% {
+            opacity: 0;
+            transform: translateX(-100%) scale(1.2) rotate(-30deg);
+        }
+        50% {
+            opacity: 1;
+            transform: translateX(0) scale(1.5) rotate(-10deg);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(100%) scale(1.8) rotate(0deg);
+        }
+    }
+    @keyframes right-slash-effect {
+        0% {
+            opacity: 0;
+            transform: translateX(100%) scale(1.2) rotate(30deg);
+        }
+        50% {
+            opacity: 1;
+            transform: translateX(0) scale(1.5) rotate(10deg);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-100%) scale(1.8) rotate(0deg);
+        }
+    }
+    .sword-slash-effect {
+        position: fixed;
+        top: 50%;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle, rgba(255,69,0,0.9), rgba(255,0,0,0.8), rgba(255,165,0,0.6));
+        clip-path: polygon(0% 30%, 100% 0%, 100% 70%, 0% 100%);
         pointer-events: none;
+        z-index: 9999;
+        box-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
     }
-    @keyframes sword-slash {
-        from { transform: translateX(-100px) rotate(-45deg); opacity: 0; }
-        to { transform: translateX(100px) rotate(45deg); opacity: 1; }
+    .left-slash {
+        animation: left-slash-effect 1.5s ease-in-out;
     }
-    .sword-fight-effect {
+    .right-slash {
+        animation: right-slash-effect 1.5s ease-in-out;
+    }
+    .blackout-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        opacity: 0.9;
+        z-index: 9998;
+        animation: flicker 0.5s ease-in-out;
+    }
+    @keyframes flicker {
+        0%, 100% { opacity: 0.9; }
+        50% { opacity: 0.6; }
+    }
+    @keyframes impact-burst {
+        0% {
+            opacity: 1;
+            transform: scale(0.5);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(2);
+        }
+    }
+    .impact-burst {
         position: fixed;
         top: 50%;
         left: 50%;
-        width: 100px;
-        height: 300px;
-        background: url('sword.png') no-repeat center/contain;
-        animation: sword-slash 0.5s linear;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255,255,0,1), rgba(255,165,0,0.8), rgba(255,0,0,0.5));
+        border-radius: 50%;
+        animation: impact-burst 0.5s ease-out;
         pointer-events: none;
+        z-index: 10000;
     }
 
-    @keyframes book-open {
-        from { transform: scale(0.5); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
+
     .book-opening-effect {
         position: fixed;
         top: 50%;
         left: 50%;
         width: 200px;
         height: 250px;
-        background: url('deathnote.png') no-repeat center/contain;
-        animation: book-open 1s ease-in-out;
+        background: url('deathnote.jpeg') no-repeat center/contain;
+        animation: book-open 3s ease-in-out;
         pointer-events: none;
     }
 
@@ -138,12 +211,40 @@ style.innerHTML = `
 document.head.appendChild(style);
 
 
+// Dragon Ball: Spinning Ball Effect
+function showDragonBallEffect() {
+    const ball = document.createElement("div");
+    ball.classList.add("dragon-ball-effect");
+    document.body.appendChild(ball);
+
+    // Optional: Add a timeout for the duration of the animation
+    setTimeout(() => ball.remove(), 2000);  // This will remove the ball after 2 seconds
+}
+
 // Demon Slayer: Sword Fighting Animation
 function showSwordFightEffect() {
-    const sword = document.createElement("div");
-    sword.classList.add("sword-fight-effect");
-    document.body.appendChild(sword);
-    setTimeout(() => sword.remove(), 500);
+    const overlay = document.createElement("div");
+    overlay.classList.add("blackout-overlay");
+    document.body.appendChild(overlay);
+    
+    const leftSlash = document.createElement("div");
+    leftSlash.classList.add("sword-slash-effect", "left-slash");
+    document.body.appendChild(leftSlash);
+    
+    const rightSlash = document.createElement("div");
+    rightSlash.classList.add("sword-slash-effect", "right-slash");
+    document.body.appendChild(rightSlash);
+    
+    const impactBurst = document.createElement("div");
+    impactBurst.classList.add("impact-burst");
+    document.body.appendChild(impactBurst);
+    
+    setTimeout(() => {
+        leftSlash.remove();
+        rightSlash.remove();
+        impactBurst.remove();
+        overlay.remove();
+    }, 2000); // Effect lasts longer
 }
 
 // Death Note: Book Opening Effect
@@ -151,7 +252,7 @@ function showBookOpeningEffect() {
     const book = document.createElement("div");
     book.classList.add("book-opening-effect");
     document.body.appendChild(book);
-    setTimeout(() => book.remove(), 1000);
+    setTimeout(() => book.remove(), 3000);
 }
 
 // One Punch Man: Fierce Punch Effect
