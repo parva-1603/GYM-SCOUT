@@ -1,58 +1,55 @@
-document.querySelectorAll(".anime-card").forEach((card) => {
-    card.addEventListener("mouseenter", () => {
-        const overlay = document.createElement("div");
-        overlay.classList.add("anime-overlay");
-        overlay.style.backgroundImage = `url(${card.dataset.bg})`;
-        overlay.style.backgroundSize = "cover";
-        overlay.style.backgroundPosition = "center";
-        overlay.style.position = "absolute";
-        overlay.style.top = "0";
-        overlay.style.left = "0";
-        overlay.style.width = "100%";
-        overlay.style.height = "100%";
-        overlay.style.opacity = "1";
-        overlay.style.zIndex = "1";
-        overlay.style.pointerEvents = "none";
-        card.style.position = "relative";
-        card.appendChild(overlay);
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".anime-card").forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+            const overlay = document.createElement("div");
+            overlay.classList.add("anime-overlay");
+            overlay.style.backgroundImage = `url(${card.dataset.bg})`;
+            overlay.style.backgroundSize = "cover";
+            overlay.style.backgroundPosition = "center";
+            overlay.style.position = "absolute";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100%";
+            overlay.style.height = "100%";
+            overlay.style.opacity = "1";
+            overlay.style.zIndex = "1";
+            overlay.style.pointerEvents = "none";
+            card.style.position = "relative";
+            card.appendChild(overlay);
+        });
 
-    card.addEventListener("mouseleave", () => {
-        const overlay = card.querySelector(".anime-overlay");
-        if (overlay) {
-            overlay.remove();
-        }
-    });
+        card.addEventListener("mouseleave", () => {
+            const overlay = card.querySelector(".anime-overlay");
+            if (overlay) {
+                overlay.remove();
+            }
+        });
 
-    card.addEventListener("click", (event) => {
-        event.preventDefault();  // Ensure the redirect doesn't happen instantly
+        card.addEventListener("click", (event) => {
+            event.preventDefault(); // Prevent instant redirect
 
-        // Identify anime title for unique effects
-        const title = card.querySelector("h2").innerText;
-        if (title.includes("Attack on Titan")) {
-            console.log("Attack on Titan clicked, applying screen shake!");
-            document.body.classList.add("screen-shake");
+            const title = card.querySelector("h2").innerText;
+
+            if (title.includes("Attack on Titan")) {
+                document.body.classList.add("screen-shake");
+                setTimeout(() => document.body.classList.remove("screen-shake"), 1500);
+            } else if (title.includes("Dragon Ball")) {
+                showDragonBallEffect();
+            } else if (title.includes("Demon Slayer")) {
+                showSwordSlashEffect();
+            } else if (title.includes("Death Note")) {
+                showDeathNoteEffect();
+            } else if (title.includes("One Piece")) {
+                showBubbleEffect();
+            }
+
             setTimeout(() => {
-                document.body.classList.remove("screen-shake");
-            }, 1500); // Animation duration
-        } else if (title.includes("Dragon Ball")) {
-            showDragonBallEffect();
-        } else if (title.includes("Demon Slayer")) {
-            showSwordFightEffect();
-        } else if (title.includes("Death Note")) {
-            showBookOpeningEffect();
-        } else if (title.includes("One Piece")) {
-            showFiercePunchEffect();
-        }
-
-        // Wait for animation to finish, then redirect
-        setTimeout(() => {
-            window.location.href = card.querySelector("a").href;
-        }, 1500); // Delay redirect to match animation duration
+                window.location.href = card.querySelector("a").href;
+            }, 1500);
+        });
     });
 });
 
-// Attack on Titan: Screen Shake Effect
 const style = document.createElement("style");
 style.innerHTML = `
     @keyframes shake {
@@ -61,11 +58,9 @@ style.innerHTML = `
         50% { transform: translate(10px, -5px); }
         75% { transform: translate(-5px, 10px); }
     }
-    .screen-shake { 
-        animation: shake 0.2s linear infinite; 
-    }
+    .screen-shake { animation: shake 0.2s linear infinite; }
 
-   @keyframes spin-expand {
+    @keyframes spin-expand {
     0% {
         transform: rotate(0deg) scale(1);
         top: 50%;
@@ -94,171 +89,96 @@ style.innerHTML = `
     z-index: 9999; /* Ensure the effect is on top */
 }
 
-    @keyframes left-slash-effect {
-        0% {
-            opacity: 0;
-            transform: translateX(-100%) scale(1.2) rotate(-30deg);
-        }
-        50% {
-            opacity: 1;
-            transform: translateX(0) scale(1.5) rotate(-10deg);
-        }
-        100% {
-            opacity: 0;
-            transform: translateX(100%) scale(1.8) rotate(0deg);
-        }
-    }
-    @keyframes right-slash-effect {
-        0% {
-            opacity: 0;
-            transform: translateX(100%) scale(1.2) rotate(30deg);
-        }
-        50% {
-            opacity: 1;
-            transform: translateX(0) scale(1.5) rotate(10deg);
-        }
-        100% {
-            opacity: 0;
-            transform: translateX(-100%) scale(1.8) rotate(0deg);
-        }
+    @keyframes rising-bubbles {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+.bubble {
+    position: fixed;
+    bottom: 0;
+    background: rgba(25, 0, 255, 0.85);
+    border-radius: 50%;
+    animation: rising-bubbles linear infinite;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@keyframes fade-to-black {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+    @keyframes sword-slash {
+        0% { transform: translateX(-100%) skewX(-30deg); opacity: 1; }
+        100% { transform: translateX(100%) skewX(-30deg); opacity: 0; }
     }
     .sword-slash-effect {
         position: fixed;
         top: 50%;
+        left: 0;
         width: 100vw;
-        height: 100vh;
-        background: radial-gradient(circle, rgba(255,69,0,0.9), rgba(255,0,0,0.8), rgba(255,165,0,0.6));
-        clip-path: polygon(0% 30%, 100% 0%, 100% 70%, 0% 100%);
-        pointer-events: none;
+        height: 30px;
+        background: linear-gradient(to right, red, orange, yellow);
+        box-shadow: 0 0 20px rgba(255, 100, 0, 0.8);
+        animation: sword-slash 2s ease-out forwards;
         z-index: 9999;
-        box-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
     }
-    .left-slash {
-        animation: left-slash-effect 1.5s ease-in-out;
+
+    @keyframes fade-to-black {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
     }
-    .right-slash {
-        animation: right-slash-effect 1.5s ease-in-out;
-    }
-    .blackout-overlay {
+    .death-note-fade {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
         background: black;
-        opacity: 0.9;
-        z-index: 9998;
-        animation: flicker 0.5s ease-in-out;
-    }
-    @keyframes flicker {
-        0%, 100% { opacity: 0.9; }
-        50% { opacity: 0.6; }
-    }
-    @keyframes impact-burst {
-        0% {
-            opacity: 1;
-            transform: scale(0.5);
-        }
-        50% {
-            opacity: 1;
-            transform: scale(1.5);
-        }
-        100% {
-            opacity: 0;
-            transform: scale(2);
-        }
-    }
-    .impact-burst {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(255,255,0,1), rgba(255,165,0,0.8), rgba(255,0,0,0.5));
-        border-radius: 50%;
-        animation: impact-burst 0.5s ease-out;
-        pointer-events: none;
-        z-index: 10000;
-    }
-
-
-    .book-opening-effect {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 200px;
-        height: 250px;
-        background: url('deathnote.jpeg') no-repeat center/contain;
-        animation: book-open 3s ease-in-out;
-        pointer-events: none;
-    }
-
-    @keyframes punch-effect {
-        from { transform: scale(0.5); opacity: 0; }
-        to { transform: scale(1.5); opacity: 1; }
-    }
-    .fierce-punch-effect {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 250px;
-        height: 250px;
-        background: url('punch.png') no-repeat center/contain;
-        animation: punch-effect 0.3s ease-in-out;
-        pointer-events: none;
+        opacity: 0;
+        animation: fade-to-black 2s ease-in-out forwards;
+        z-index: 9999;
     }
 `;
 document.head.appendChild(style);
 
-
-// Dragon Ball: Spinning Ball Effect
 function showDragonBallEffect() {
     const ball = document.createElement("div");
     ball.classList.add("dragon-ball-effect");
     document.body.appendChild(ball);
-
-    // Optional: Add a timeout for the duration of the animation
-    setTimeout(() => ball.remove(), 2000);  // This will remove the ball after 2 seconds
+    setTimeout(() => ball.remove(), 2000);
 }
 
-// Demon Slayer: Sword Fighting Animation
-function showSwordFightEffect() {
+function showSwordSlashEffect() {
+    const slash = document.createElement("div");
+    slash.classList.add("sword-slash-effect");
+    document.body.appendChild(slash);
+    setTimeout(() => slash.remove(), 800);
+}
+
+function showDeathNoteEffect() {
     const overlay = document.createElement("div");
-    overlay.classList.add("blackout-overlay");
+    overlay.classList.add("death-note-fade");
     document.body.appendChild(overlay);
-    
-    const leftSlash = document.createElement("div");
-    leftSlash.classList.add("sword-slash-effect", "left-slash");
-    document.body.appendChild(leftSlash);
-    
-    const rightSlash = document.createElement("div");
-    rightSlash.classList.add("sword-slash-effect", "right-slash");
-    document.body.appendChild(rightSlash);
-    
-    const impactBurst = document.createElement("div");
-    impactBurst.classList.add("impact-burst");
-    document.body.appendChild(impactBurst);
-    
     setTimeout(() => {
-        leftSlash.remove();
-        rightSlash.remove();
-        impactBurst.remove();
-        overlay.remove();
-    }, 2000); // Effect lasts longer
+        window.location.href = document.querySelector(".anime-card a").href;
+    }, 2000);
 }
 
-// Death Note: Book Opening Effect
-function showBookOpeningEffect() {
-    const book = document.createElement("div");
-    book.classList.add("book-opening-effect");
-    document.body.appendChild(book);
-    setTimeout(() => book.remove(), 3000);
-}
-
-// One Punch Man: Fierce Punch Effect
-function showFiercePunchEffect() {
-    const punch = document.createElement("div");
-    punch.classList.add("fierce-punch-effect");
-    document.body.appendChild(punch);
-    setTimeout(() => punch.remove(), 300);
+function showBubbleEffect() {
+    for (let i = 0; i < 1000; i++) {
+        const bubble = document.createElement("div");
+        bubble.classList.add("bubble");
+        bubble.style.bottom = "0px";
+        bubble.style.left = `${Math.random() * 100}vw`; 
+        bubble.style.animationDuration = `${2 + Math.random() * 3}s`;
+        bubble.style.animationDelay = `${Math.random() * 1.5}s`;
+        const size = `${10 + Math.random() * 30}px`;
+        bubble.style.width = size;
+        bubble.style.height = size;
+        document.body.appendChild(bubble);
+        setTimeout(() => bubble.remove(), 6000);
+    }
 }
